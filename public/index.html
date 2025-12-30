@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft Project</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>minecraft proxy hack bedrock </h1>
+  <p id="status">讀取中...</p>
+
+  <script>
+    fetch("/api/status")
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById("status").innerText =
+          d.online ? "🟢 系統運行中" : "🔴 系統離線";
+      });
+  </script>
+</body>
+</html>
