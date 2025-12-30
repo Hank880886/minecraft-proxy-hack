@@ -1,9 +1,0 @@
-name: VerifyLogin
-main: verifylogin.Main
-version: 1.0.0
-api: ["1.0.0"]
-author: YourName
-commands:
-  verify:
-    description: 網站登入驗證
-    usage: /verify <驗證碼>
