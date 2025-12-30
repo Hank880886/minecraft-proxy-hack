@@ -2,6 +2,8 @@ const express = require("express");
 const fs = require("fs");
 const router = express.Router();
 
+const EXPIRE_TIME = 5 * 60 * 1000; // 5 分鐘
+
 function load(file) {
   return JSON.parse(fs.readFileSync(file));
 }
@@ -24,16 +26,26 @@ router.get("/login", (req, res) => {
     <h1>Minecraft 登入</h1>
     <p>請在遊戲內輸入：</p>
     <h2>/verify ${code}</h2>
+    <p>⚠ 5 分鐘內有效</p>
   `);
 });
 
-// 伺服器呼叫（遊戲內驗證成功）
+// PocketMine 呼叫
 router.post("/verify", (req, res) => {
   const { code, username } = req.body;
   const verify = load("data/verify.json");
   const users = load("data/users.json");
 
-  if (!verify[code]) return res.json({ success: false });
+  if (!verify[code]) {
+    return res.status(400).json({ success: false, reason: "invalid" });
+  }
+
+  // ⏰ 過期檢查
+  if (Date.now() - verify[code].created > EXPIRE_TIME) {
+    delete verify[code];
+    save("data/verify.json", verify);
+    return res.status(400).json({ success: false, reason: "expired" });
+  }
 
   users[username] = {
     name: username,
@@ -45,12 +57,6 @@ router.post("/verify", (req, res) => {
   save("data/users.json", users);
 
   res.json({ success: true });
-});
-
-// 網站完成登入
-router.get("/complete/:username", (req, res) => {
-  req.session.user = req.params.username;
-  res.redirect("/admin");
 });
 
 module.exports = router;
