@@ -11,7 +11,7 @@ use pocketmine\utils\TextFormat;
 class Main extends PluginBase {
 
     // 🔴 改成你的網站
-    private string $verifyUrl = "http://proxy.twdevs.com/auth/verify";
+    private string $verifyUrl = "https://proxy.twdevs.com/auth/verify";
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
 
